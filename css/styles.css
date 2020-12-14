@@ -46,16 +46,13 @@ h3 {
   margin: 0;
 }
 
-.dot {
+.county {
   cursor: pointer;
-  stroke: #333;
-  stroke-width: 1px;
-  stroke-dasharray: 2, 0;
-  stroke-linejoin: round;
 }
 
 #tooltip {
   position: absolute;
+  pointer-events: none;
   background-color: var(--tooltip-bg-color);
   color: var(--tooltip-font-color);
   padding: 0.5em;

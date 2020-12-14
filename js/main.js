@@ -1,3 +1,13 @@
+// todos in no speciific order
+// [ ] display the tooltip next to the mouse (since we don't have x y, use mouseposition ?)
+// [ ] fix display when zooming
+// [ ] redesign the tooltip
+// [ ] finish building up html scafold
+// [ ] build the legend
+// [ ] pick another color scheme
+// [ ] clean up code
+// [ ] ponder on a better way to access educationData from d3
+
 (() => {
   window.addEventListener('DOMContentLoaded', async () => {
     // Constants
@@ -50,7 +60,7 @@
 
       const path = d3.geoPath();
 
-      const color = d3.scaleQuantize([1, 100], d3.schemeBlues[9]);
+      const color = d3.scaleQuantize([1, 70], d3.schemeBlues[9]);
 
       // Axis bars
 
@@ -107,13 +117,17 @@
           const [edx] = educationData.data.filter(
             (county) => county.fips === d.id
           );
+
+          const { x, y } = this.getBBox();
+          console.log(x);
+          console.log(this.getBBox());
           tooltip
 
             .html(`${_tooltipHTML(edx)}`)
             .attr('data-year', `${d.year}`)
             .style('visibility', 'visible')
-            .style('top', `${y(d.month) - 65}px`)
-            .style('left', `${x(new Date(String(d.year)))}px`);
+            .style('top', `${y}px`)
+            .style('left', `${x + 20}px`);
         })
         .on('mouseout', function () {
           d3.select(this).order().lower().style('stroke', 'none');
