@@ -57,16 +57,8 @@ h3 {
   color: var(--tooltip-font-color);
   padding: 0.5em;
   box-shadow: 3px 3px rgba(0, 0, 0, 0.5);
-  font-weight: bold;
-  font-size: 0.9em;
-  min-width: 170px;
-}
-
-.warning {
-  display: block;
-  color: rgb(255, 0, 0);
-  margin: 0;
-  margin-top: 1.5em;
+  font-size: 0.65em;
+  opacity: 0.9;
 }
 
 g {
@@ -82,13 +74,6 @@ article {
   position: relative;
 }
 
-#legend {
-  font-size: 0.8em;
-}
-
-.cell {
-  cursor: pointer;
-}
 @media (max-width: 1600px) {
   main {
     width: 100%;
