@@ -1,20 +1,9 @@
-// todos in no speciific order
-// [x] display the tooltip next to the mouse
-// [ ] fix display when zooming
-// [x] redesign the tooltip
-// [ ] finish building up html scafold
-// [x] build the legend
-// [x] pick another color scheme
-// [ ] clean up code
-// [ ] ponder on a better way to access educationData from d3
-
 (() => {
   window.addEventListener('DOMContentLoaded', async () => {
     // Constants
+    // ratio 192:122
     const WIDTH = 975;
     const HEIGHT = 610;
-
-    // DOM queries
 
     // Init
     const countyData = await fetchData('http://localhost:5555/api/countyData');
@@ -35,20 +24,18 @@
     }
 
     function renderData(countyData, educationData) {
-      // Private Functions
-      const _tooltipHTML = (d) => {
-        return `
-          ${d.area_name}, ${d.state}: ${d.bachelorsOrHigher}%
-          `;
-      };
-
       //  Data
-      console.log(d3);
       const us = countyData.data;
-
       const path = d3.geoPath();
+      const highestEducationPercentage = d3.max(
+        educationData.data,
+        (d) => d.bachelorsOrHigher
+      );
 
-      const color = d3.scaleQuantize([1, 70], d3.schemeOranges[9]);
+      const color = d3.scaleQuantize(
+        [1, highestEducationPercentage],
+        d3.schemeOranges[9]
+      );
 
       //Tooltip
       const tooltip = d3
@@ -61,23 +48,25 @@
       const svg = d3
         .select('article')
         .append('svg')
-        .attr('id', 'title')
         .attr('width', WIDTH)
         .attr('height', HEIGHT)
         .attr('viewBox', `0 0 ${WIDTH} ${HEIGHT}`);
 
+      // Legend
       svg
         .append('g')
-        .attr('transform', 'translate(610, 20)')
+        .attr('id', 'legend')
+        .attr('transform', `translate(${HEIGHT}, 20)`)
         .append(() =>
           legend({
             width: 260,
             color,
-            title: 'bachelors degree or higher (%)',
+            title: "Bachelor's degree or higher (%)",
             tickFormat: '.0f',
           })
         );
 
+      // Rendering country and counties
       svg
         .append('g')
         .selectAll('path')
@@ -99,7 +88,7 @@
           return education.bachelorsOrHigher;
         });
 
-      // Tooltip animation
+      // rendering states
       svg
         .append('path')
         .datum(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
@@ -108,6 +97,7 @@
         .attr('stroke-linejoin', 'round')
         .attr('d', path);
 
+      // Tooltip animation
       svg
         .selectAll('.county')
         .on('mouseover', function (d) {
@@ -115,9 +105,7 @@
           const [education] = educationData.data.filter(
             (county) => county.fips === d.id
           );
-
           const { x, y } = this.getBBox();
-
           tooltip
             .html(
               `${education.area_name}, ${education.state}: ${education.bachelorsOrHigher}%`
@@ -134,6 +122,8 @@
     }
   });
 
+  // legend function found on Observables.com
+  // https://observablehq.com/@d3/color-legend
   function legend({
     color,
     title,
